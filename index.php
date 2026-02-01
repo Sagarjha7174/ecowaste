@@ -1,3 +1,31 @@
+<?php
+$message_status = '';
+$message_type = '';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['contact_submit'])) {
+    $to = "sagarjha7174@gmail.com";
+    $name = strip_tags(trim($_POST['name']));
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $user_message = strip_tags(trim($_POST['message']));
+
+    $subject = "New Contact Us Message from: $name";
+    
+    $email_content = "Name: $name\n";
+    $email_content .= "Email: $email\n\n";
+    $email_content .= "Message:\n$user_message\n";
+
+    $headers = "From: webmaster@ecowaste.com\r\n";
+    $headers .= "Reply-To: $email\r\n";
+
+    if (mail($to, $subject, $email_content, $headers)) {
+        $message_status = "Thank you! Your message has been sent to our administrator.";
+        $message_type = "success";
+    } else {
+        $message_status = "Oops! Something went wrong and we couldn't send your message.";
+        $message_type = "error";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -87,18 +115,25 @@
             </div>
         </section>
 
-        <section id="contact">
-            <div class="container">
-                <h2>Get in Touch</h2>
-                <p>Have questions or want to sign up for a service? Send us a message!</p>
-                <form id="contact-form">
-                    <input type="text" name="name" placeholder="Your Name" required>
-                    <input type="email" name="email" placeholder="Your Email" required>
-                    <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
+<section id="contact">
+    <div class="container">
+        <h2>Get in Touch</h2>
+        <p>Have questions or want to sign up for a service? Send us a message!</p>
+        
+        <?php if($message_status): ?>
+            <div class="<?= $message_type ?>-message" style="margin-bottom: 1rem; padding: 1rem; border-radius: 8px; border: 1px solid;">
+                <?= $message_status ?>
             </div>
-        </section>
+        <?php endif; ?>
+
+        <form id="contact-form" action="index.php" method="post">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+            <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+            <button type="submit" name="contact_submit" class="btn btn-primary">Send Message</button>
+        </form>
+    </div>
+</section>
     </main>
 
     <footer>

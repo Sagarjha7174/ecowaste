@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Check both email OR mobile specifically for drivers
-    $stmt = $conn->prepare("SELECT id, name, password FROM drivers WHERE email = ? OR mobile = ?");
+    $stmt = $conn->prepare("SELECT id, name, password FROM drivers WHERE is_deleted=0 AND ( email = ? OR mobile = ?)");
     $stmt->bind_param("ss", $identifier, $identifier);
     $stmt->execute();
     $result = $stmt->get_result();

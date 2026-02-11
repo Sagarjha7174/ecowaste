@@ -145,7 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['collect_pickup'])) {
     }
     
     // Code is correct, proceed with collection
-    $stmt = $conn->prepare("UPDATE pickups SET status = 'Collected by Driver' WHERE id = ? AND driver_id = ?");
+    $stmt = $conn->prepare("UPDATE pickups SET status = 'Completed' WHERE id = ? AND driver_id = ?");
     $stmt->bind_param("ii", $pickup_id, $driver_id);
     
     if ($stmt->execute()) {
@@ -225,7 +225,7 @@ $history_limit = $show_all_history ? "" : "LIMIT 3";
 $history_sql = "SELECT p.*, u.name as user_name, p.latitude, p.longitude 
                 FROM pickups p 
                 JOIN users u ON p.user_id = u.id 
-                WHERE p.driver_id = ? AND p.status IN ('Completed', 'Cancelled', 'Collected by Driver') 
+                WHERE p.driver_id = ? AND p.status IN ('Completed', 'Cancelled') 
                 ORDER BY p.updated_at DESC $history_limit";
 $stmt_history = $conn->prepare($history_sql);
 $stmt_history->bind_param("i", $driver_id);
@@ -236,7 +236,7 @@ $total_history_count = $history_result->num_rows;
 // Get total count for "Show All" button
 if (!$show_all_history) {
     $count_sql = "SELECT COUNT(*) as total FROM pickups 
-                  WHERE driver_id = ? AND status IN ('Completed', 'Cancelled', 'Collected by Driver')";
+                  WHERE driver_id = ? AND status IN ('Completed', 'Cancelled')";
     $stmt_count = $conn->prepare($count_sql);
     $stmt_count->bind_param("i", $driver_id);
     $stmt_count->execute();
@@ -329,10 +329,10 @@ if (!$show_all_history) {
             font-weight: 700;
         }
         .notification-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 0.5rem;
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            margin-top: 0;
             width: 380px;
             max-height: 450px;
             background: var(--bg-secondary);

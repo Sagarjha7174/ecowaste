@@ -259,7 +259,7 @@ $pending_today_sql = "SELECT COUNT(*) as total FROM pickups WHERE DATE(pickup_da
 $pending_today_res = $conn->query($pending_today_sql);
 $pending_today = $pending_today_res->fetch_assoc()['total'];
 
-$collected_today_sql = "SELECT COUNT(*) as total FROM pickups WHERE status IN ('Collected', 'Collected by Driver') AND DATE(updated_at) = CURDATE()";
+$collected_today_sql = "SELECT COUNT(*) as total FROM pickups WHERE status IN ('Collected', 'Completed') AND DATE(updated_at) = CURDATE()";
 $collected_today_res = $conn->query($collected_today_sql);
 $collected_today = $collected_today_res->fetch_assoc()['total'];
 
@@ -298,7 +298,7 @@ $assigned_result = $conn->query($assigned_sql);
 $out_for_pickup_sql = "SELECT p.*, u.name as user_name, d.name as driver_name FROM pickups p JOIN users u ON p.user_id = u.id LEFT JOIN drivers d ON p.driver_id = d.id WHERE u.is_deleted = FALSE AND p.status = 'Out for Pickup' ORDER BY p.requested_at DESC";
 $out_for_pickup_result = $conn->query($out_for_pickup_sql);
 
-$collected_sql = "SELECT p.*, u.name as user_name, d.name as driver_name FROM pickups p JOIN users u ON p.user_id = u.id LEFT JOIN drivers d ON p.driver_id = d.id WHERE u.is_deleted = FALSE AND p.status IN ('Collected', 'Collected by Driver') ORDER BY p.requested_at DESC";
+$collected_sql = "SELECT p.*, u.name as user_name, d.name as driver_name FROM pickups p JOIN users u ON p.user_id = u.id LEFT JOIN drivers d ON p.driver_id = d.id WHERE u.is_deleted = FALSE AND p.status IN ('Collected', 'Completed') ORDER BY p.requested_at DESC";
 $collected_result = $conn->query($collected_sql);
 
 $completed_sql = "SELECT p.*, u.name as user_name, d.name as driver_name FROM pickups p JOIN users u ON p.user_id = u.id LEFT JOIN drivers d ON p.driver_id = d.id WHERE u.is_deleted = FALSE AND p.status IN ('Completed', 'Cancelled') ORDER BY p.updated_at DESC";
@@ -562,10 +562,10 @@ $fired_drivers_result = $conn->query($fired_drivers_sql);
             font-weight: 700;
         }
         .notification-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 0.5rem;
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            margin-top: 0;
             width: 380px;
             max-height: 450px;
             background: var(--bg-secondary);

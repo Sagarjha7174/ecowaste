@@ -181,7 +181,7 @@ $total_history_count = $history_result->num_rows;
 // Get total count for "Show All" button
 if (!$show_all_history) {
     $count_sql = "SELECT COUNT(*) as total FROM pickups 
-                  WHERE user_id = ? AND status IN ('Completed', 'Cancelled', 'Collected', 'Collected by Driver')";
+                  WHERE user_id = ? AND status IN ('Completed', 'Cancelled', 'Collected')";
     $stmt_count = $conn->prepare($count_sql);
     $stmt_count->bind_param("i", $user_id);
     $stmt_count->execute();
@@ -197,9 +197,8 @@ function getStatusStep($status) {
         case 'Scheduled': return 1;
         case 'Assigned': return 2;
         case 'Out for Pickup': return 3;
-        case 'Collected': 
-        case 'Collected by Driver': return 4;
-        case 'Completed': return 5;
+        case 'Collected':
+        case 'Completed': return 4;
         case 'Cancelled': return -1;
         default: return 0;
     }
@@ -329,10 +328,10 @@ function getStatusStep($status) {
             font-weight: 700;
         }
         .notification-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 0.5rem;
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            margin-top: 0;
             width: 380px;
             max-height: 450px;
             background: var(--bg-secondary);
@@ -1182,7 +1181,7 @@ function getStatusStep($status) {
     <?php 
         $isCancelled = ($row['status'] == 'Cancelled');
         $isCompleted = ($row['status'] == 'Completed');
-        $isCollected = ($row['status'] == 'Collected' || $row['status'] == 'Collected by Driver');
+        $isCollected = ($row['status'] == 'Collected' || $row['status'] == 'Completed');
         $cancelledAfterStep = ($row['driver_id']) ? 2 : 1;
         $currentStep = getStatusStep($row['status']);
         

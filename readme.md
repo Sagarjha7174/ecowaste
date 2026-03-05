@@ -131,12 +131,6 @@ Deployment stack:
 
 ---
 
-# 📁 Repository
-
-GitHub Repository:  
-https://github.com/Sagarjha7174/ecowaste2
-
----
 
 # 🤖 LLM Note
 
